@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.example.android.dogs.model.DogBreed
 import com.example.android.dogs.model.DogDatabase
 import com.example.android.dogs.model.DogsApiService
+import com.example.android.dogs.util.SharedPreferencesHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableSingleObserver
@@ -14,6 +15,7 @@ import kotlinx.coroutines.launch
 
 class ListViewModel(application: Application) : BaseViewModel(application) {
 
+    private var prefHelper = SharedPreferencesHelper(getApplication())
     private val dogsService = DogsApiService()
 
     /**This allows us to avoid any memory licking while our application
@@ -98,7 +100,7 @@ class ListViewModel(application: Application) : BaseViewModel(application) {
 
 
             var i = 0
-            while (i< list.size){
+            while (i < list.size) {
                 //We assign the corresponding i to the corresponding list element
                 list[i].uuid = result[i].toInt()
                 ++i
@@ -106,6 +108,12 @@ class ListViewModel(application: Application) : BaseViewModel(application) {
             dogsRetrieved(list)
 
         }
+
+        /**Stores the information exactly the moment when we have updated the database with the dog
+         * information that we retrieved and we will use this information when we decide whether we
+         * should retrieve the data from database or refresh the data from the remote endpoint
+         */
+        prefHelper.saveUpdateTime(System.nanoTime())
     }
 
     override fun onCleared() {
