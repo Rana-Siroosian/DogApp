@@ -9,11 +9,15 @@ a part of our navigation -->
         <variable
             name="dog"
             type="com.example.android.dogs.model.DogBreed" />
+        <variable
+            name="palette"
+            type="com.example.android.dogs.model.DogPalette" />
     </data>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".view.DetailFragment"
+        android:background="@{palette.color}"
         >
 
         <ImageView
