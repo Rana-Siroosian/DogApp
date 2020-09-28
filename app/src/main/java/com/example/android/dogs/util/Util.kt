@@ -2,6 +2,7 @@ package com.example.android.dogs.util
 
 import android.content.Context
 import android.widget.ImageView
+import androidx.databinding.BindingAdapter
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -30,4 +31,12 @@ fun ImageView.loadImage(uri: String?, progressDrawable: CircularProgressDrawable
         //'this' in the code below refers to the ImageView here
         .load(uri).into(this)
 
+}
+
+/**The binding adapter simply make a function available to our layout. This function is using the
+ * extension function that we made (loadImage) to load a url into an imageView.
+ */
+@BindingAdapter("android:imageUrl")
+fun loadImage( view: ImageView, url: String?){
+    view.loadImage(url, getProgressDrawable(view.context))
 }
