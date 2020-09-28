@@ -36,4 +36,7 @@ class SharedPreferencesHelper {
         }
     }
 
+    //This is the function to retrieve the data from the sharedPreferences that we stored
+    fun getUpdateTime() = prefs?.getLong(PREF_TIME,0)
+
 }

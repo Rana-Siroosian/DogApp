@@ -1,6 +1,7 @@
 package com.example.android.dogs.viewmodel
 
 import android.app.Application
+import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.android.dogs.model.DogBreed
@@ -16,6 +17,15 @@ import kotlinx.coroutines.launch
 class ListViewModel(application: Application) : BaseViewModel(application) {
 
     private var prefHelper = SharedPreferencesHelper(getApplication())
+
+    /**If the data has been retrieved over than 5 minutes ago then we will get the data from the
+     * endpoint but if it's less than 5 minutes ago then we will get it from the database. In order
+     * to do that we make the refreshTime (this is the time after which the data needs to be refreshed.
+     * We need to put this in nanosecond and the reason is because we saved out update time in
+     * nanosecond. 5 * 60 seconds * 1000 milli seconds * 1000 micro seconds * 1000 nano seconds. We
+     * need to store everything in a Long variable type
+     */
+    private var refreshTime = 5 *60 * 1000 * 1000 * 1000L
     private val dogsService = DogsApiService()
 
     /**This allows us to avoid any memory licking while our application
@@ -42,9 +52,28 @@ class ListViewModel(application: Application) : BaseViewModel(application) {
 
     //This function simply refresh the information
     fun refresh() {
-        fetchFromRemote()
+        val updateTime = prefHelper.getUpdateTime()
+        //Here we need to check and see if it's more than 5 minutes ago or not
+        if (updateTime != null && updateTime != 0L && System.nanoTime() - updateTime < refreshTime){
+            fetchFromDatabase()
+        }else{
+            fetchFromRemote()
+        }
     }
 
+    //Every time we refresh, we would get the data from the endpoint
+    fun refreshBypassCache(){
+        fetchFromRemote()
+    }
+    private fun fetchFromDatabase(){
+        loading.value = true
+        launch {
+            val dogs = DogDatabase(getApplication()).dogDao().getAllDogs()
+            dogsRetrieved(dogs)
+            Toast.makeText(getApplication(), "Dogs retrieved from database", Toast.LENGTH_SHORT)
+                .show()
+        }
+    }
     private fun fetchFromRemote() {
         loading.value = true
         disposable.add(
@@ -62,6 +91,8 @@ class ListViewModel(application: Application) : BaseViewModel(application) {
                 .subscribeWith(object : DisposableSingleObserver<List<DogBreed>>() {
                     override fun onSuccess(dogList: List<DogBreed>) {
                         storeDogsLocally(dogList)
+                        Toast.makeText(getApplication(), "Dogs retrieved from endpoint", Toast.LENGTH_SHORT)
+                            .show()
 
                     }
 

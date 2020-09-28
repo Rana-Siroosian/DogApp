@@ -3,6 +3,7 @@ package com.example.android.dogs.view
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.dogs.R
@@ -32,7 +33,10 @@ class DogsListAdapter(val dogsList: ArrayList<DogBreed>): RecyclerView.Adapter<D
     override fun onBindViewHolder(holder: DogViewHolder, position: Int) {
         holder.view.name.text = dogsList[position].dogBreed
         holder.view.lifespan.text = dogsList[position].lifeSpan
-        holder.view.setOnClickListener { it.findNavController().navigate(R.id.detailFragment) }
+        holder.view.setOnClickListener {
+            val action = ListFragmentDirections.actionDetailFragment()
+            action.dogUuid = dogsList[position].uuid
+            Navigation.findNavController(it).navigate(action) }
         holder.view.imageView.loadImage(dogsList[position].imageUrl, getProgressDrawable(
             holder.view.imageView.context
         ))

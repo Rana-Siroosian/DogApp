@@ -46,7 +46,8 @@ class ListFragment : Fragment() {
             dogsList.visibility = View.GONE
             listError.visibility = View.GONE
             loadingView.visibility = View.VISIBLE
-            viewModel.refresh()
+            //Every time we refresh, we would get the data from the endpoint
+            viewModel.refreshBypassCache()
             //The code below makes the spinner disappear from the screen
             refreshLayout.isRefreshing = false
         }
