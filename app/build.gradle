@@ -3,7 +3,9 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'androidx.navigation.safeargs'
-
+/**
+ * author: RanaSiroosian
+ */
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
@@ -16,6 +18,9 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        multiDexEnabled true
+        
     }
 
     buildTypes {
@@ -88,4 +93,13 @@ dependencies {
 
     //Jetpack preferences
     implementation "androidx.preference:preference:$preferencesVersion"
+
+    //Firebase
+    implementation"com.google.firebase:firebase-core:16.0.8"
+
+    //MultiDex
+    implementation"com.android.support:multidex:1.0.3"
+
+
+
 }

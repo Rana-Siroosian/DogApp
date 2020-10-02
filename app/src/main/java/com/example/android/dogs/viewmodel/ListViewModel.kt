@@ -14,7 +14,11 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.launch
+import java.lang.NumberFormatException
 
+/**
+ * author: RanaSiroosian
+ */
 class ListViewModel(application: Application) : BaseViewModel(application) {
 
     private var prefHelper = SharedPreferencesHelper(getApplication())
@@ -26,7 +30,7 @@ class ListViewModel(application: Application) : BaseViewModel(application) {
      * nanosecond. 5 * 60 seconds * 1000 milli seconds * 1000 micro seconds * 1000 nano seconds. We
      * need to store everything in a Long variable type
      */
-    private var refreshTime = 5 *60 * 1000 * 1000 * 1000L
+    private var refreshTime = 5 * 60 * 1000 * 1000 * 1000L
     private val dogsService = DogsApiService()
 
     /**This allows us to avoid any memory licking while our application
@@ -53,20 +57,34 @@ class ListViewModel(application: Application) : BaseViewModel(application) {
 
     //This function simply refresh the information
     fun refresh() {
+        checkCacheDuration()
         val updateTime = prefHelper.getUpdateTime()
         //Here we need to check and see if it's more than 5 minutes ago or not
-        if (updateTime != null && updateTime != 0L && System.nanoTime() - updateTime < refreshTime){
+        if (updateTime != null && updateTime != 0L && System.nanoTime() - updateTime < refreshTime) {
             fetchFromDatabase()
-        }else{
+        } else {
             fetchFromRemote()
         }
     }
 
+    private fun checkCacheDuration() {
+        val cachePreference = prefHelper.getCacheDuration()
+
+        try {
+            val cachePreferenceInt = cachePreference?.toInt() ?: 5 * 60
+            //refreshTime will be updated based on the preferences that the user set
+            refreshTime = cachePreferenceInt.times(1000 * 1000 * 1000L)
+        } catch (e: NumberFormatException) {
+            e.printStackTrace()
+        }
+    }
+
     //Every time we refresh, we would get the data from the endpoint
-    fun refreshBypassCache(){
+    fun refreshBypassCache() {
         fetchFromRemote()
     }
-    private fun fetchFromDatabase(){
+
+    private fun fetchFromDatabase() {
         loading.value = true
         launch {
             val dogs = DogDatabase(getApplication()).dogDao().getAllDogs()
@@ -75,6 +93,7 @@ class ListViewModel(application: Application) : BaseViewModel(application) {
                 .show()
         }
     }
+
     private fun fetchFromRemote() {
         loading.value = true
         disposable.add(
@@ -92,7 +111,11 @@ class ListViewModel(application: Application) : BaseViewModel(application) {
                 .subscribeWith(object : DisposableSingleObserver<List<DogBreed>>() {
                     override fun onSuccess(dogList: List<DogBreed>) {
                         storeDogsLocally(dogList)
-                        Toast.makeText(getApplication(), "Dogs retrieved from endpoint", Toast.LENGTH_SHORT)
+                        Toast.makeText(
+                            getApplication(),
+                            "Dogs retrieved from endpoint",
+                            Toast.LENGTH_SHORT
+                        )
                             .show()
                         NotificationsHelper(getApplication()).createNotification()
 

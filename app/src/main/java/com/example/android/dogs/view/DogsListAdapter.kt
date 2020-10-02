@@ -12,10 +12,14 @@ import com.example.android.dogs.model.DogBreed
 
 import kotlinx.android.synthetic.main.item_dog.view.*
 
-class DogsListAdapter(val dogsList: ArrayList<DogBreed>): RecyclerView.Adapter<DogsListAdapter.DogViewHolder>()
-    ,DogClickListener{
+/**
+ * author: RanaSiroosian
+ */
+class DogsListAdapter(val dogsList: ArrayList<DogBreed>) :
+    RecyclerView.Adapter<DogsListAdapter.DogViewHolder>()
+    , DogClickListener {
 
-    fun updateDogList(newDogsList: List<DogBreed>){
+    fun updateDogList(newDogsList: List<DogBreed>) {
         dogsList.clear()
         dogsList.addAll(newDogsList)
         notifyDataSetChanged()
@@ -23,7 +27,8 @@ class DogsListAdapter(val dogsList: ArrayList<DogBreed>): RecyclerView.Adapter<D
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DogViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val view = DataBindingUtil.inflate<ItemDogBinding>(inflater, R.layout.item_dog,parent,false)
+        val view =
+            DataBindingUtil.inflate<ItemDogBinding>(inflater, R.layout.item_dog, parent, false)
         return DogViewHolder(view)
     }
 
@@ -40,9 +45,10 @@ class DogsListAdapter(val dogsList: ArrayList<DogBreed>): RecyclerView.Adapter<D
     override fun onDogClicked(v: View) {
         val uuid = v.dogId.text.toString().toInt()
         val action = ListFragmentDirections.actionDetailFragment()
-            action.dogUuid = uuid
-            Navigation.findNavController(v).navigate(action)
+        action.dogUuid = uuid
+        Navigation.findNavController(v).navigate(action)
     }
-    class DogViewHolder( var view: ItemDogBinding) : RecyclerView.ViewHolder(view.root)
+
+    class DogViewHolder(var view: ItemDogBinding) : RecyclerView.ViewHolder(view.root)
 
 }

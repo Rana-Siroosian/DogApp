@@ -5,6 +5,9 @@ import androidx.room.Insert
 import androidx.room.Query
 import retrofit2.http.DELETE
 
+/**
+ * author: RanaSiroosian
+ */
 @Dao
 interface DogDao {
 

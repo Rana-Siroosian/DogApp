@@ -1,11 +1,8 @@
 package com.example.android.dogs.view
 
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewOutlineProvider
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
@@ -16,17 +13,21 @@ import com.example.android.dogs.model.DogBreed
 import com.example.android.dogs.viewmodel.ListViewModel
 import kotlinx.android.synthetic.main.fragment_list.*
 
-
+/**
+ * author: RanaSiroosian
+ */
 class ListFragment : Fragment() {
 
 
-    private lateinit var viewModel : ListViewModel
+    private lateinit var viewModel: ListViewModel
     private val dogsListAdapter = DogsListAdapter(arrayListOf())
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        //This allows the system to create the menu
+        setHasOptionsMenu(true)
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_list, container, false)
     }
@@ -55,29 +56,46 @@ class ListFragment : Fragment() {
 
     }
 
-    fun observeViewModel(){
-        viewModel.dogs.observe(this, Observer {
-            dogs->
+    fun observeViewModel() {
+        viewModel.dogs.observe(this, Observer { dogs ->
             dogs?.let {
                 dogsList.visibility = View.VISIBLE
                 dogsListAdapter.updateDogList(dogs)
             }
         })
 
-        viewModel.dogsLoadError.observe(this, Observer {
-            isError -> isError?.let {
-            listError.visibility = if(it) View.VISIBLE else View.GONE
-        }
+        viewModel.dogsLoadError.observe(this, Observer { isError ->
+            isError?.let {
+                listError.visibility = if (it) View.VISIBLE else View.GONE
+            }
         })
 
-        viewModel.loading.observe(this, Observer {
-            isLoading -> isLoading?.let {
-            loadingView.visibility = if(it) View.VISIBLE else View.GONE
-            if(it){
-                listError.visibility = View.GONE
-                dogsList.visibility = View.GONE
+        viewModel.loading.observe(this, Observer { isLoading ->
+            isLoading?.let {
+                loadingView.visibility = if (it) View.VISIBLE else View.GONE
+                if (it) {
+                    listError.visibility = View.GONE
+                    dogsList.visibility = View.GONE
+                }
+            }
+        })
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.list_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.actionSettings -> {
+                view?.let {
+                    Navigation.findNavController(it)
+                        .navigate(ListFragmentDirections.actionSettings())
+                }
             }
         }
-        })
+        return super.onOptionsItemSelected(item)
+
     }
 }

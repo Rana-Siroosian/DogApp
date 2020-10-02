@@ -8,6 +8,11 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.android.dogs.R
 
+/**
+ * author: RanaSiroosian
+ */
+val PERMISSION_SEND_SMS = 234
+
 /**The method below give us the spinner on the screen while the actual url
  * images being loaded
  */
@@ -37,6 +42,6 @@ fun ImageView.loadImage(uri: String?, progressDrawable: CircularProgressDrawable
  * extension function that we made (loadImage) to load a url into an imageView.
  */
 @BindingAdapter("android:imageUrl")
-fun loadImage( view: ImageView, url: String?){
+fun loadImage(view: ImageView, url: String?) {
     view.loadImage(url, getProgressDrawable(view.context))
 }

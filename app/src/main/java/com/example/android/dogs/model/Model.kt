@@ -5,6 +5,9 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
+/**
+ * author: RanaSiroosian
+ */
 @Entity
 data class DogBreed(
 
@@ -36,9 +39,15 @@ data class DogBreed(
     @ColumnInfo(name = "dog_url")
     val imageUrl: String?
 
-){
+) {
     @PrimaryKey(autoGenerate = true)
-    var uuid : Int =0
+    var uuid: Int = 0
 }
 
 data class DogPalette(var color: Int)
+
+data class SmsInfo(
+    var to: String,
+    var text: String,
+    var imageUrl: String?
+)

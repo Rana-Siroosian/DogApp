@@ -5,6 +5,9 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 
+/**
+ * author: RanaSiroosian
+ */
 class SharedPreferencesHelper {
 
     companion object {
@@ -37,6 +40,8 @@ class SharedPreferencesHelper {
     }
 
     //This is the function to retrieve the data from the sharedPreferences that we stored
-    fun getUpdateTime() = prefs?.getLong(PREF_TIME,0)
+    fun getUpdateTime() = prefs?.getLong(PREF_TIME, 0)
+
+    fun getCacheDuration() = prefs?.getString("pref_cache_duration", "")
 
 }

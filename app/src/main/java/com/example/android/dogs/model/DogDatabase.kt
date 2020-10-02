@@ -5,6 +5,9 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
+/**
+ * author: RanaSiroosian
+ */
 @Database(entities = [DogBreed::class], version = 1)
 abstract class DogDatabase : RoomDatabase() {
 
